@@ -27,7 +27,7 @@ npm install -D axios svelte @sveltejs/vite-plugin-svelte @inertiajs/inertia @ine
 
 Axios is used by Intertia under the hood, and we need to make sure we avoid getting caught without CSRF tokens in our requests, svelte @sveltejs/vite-plugin-svelte @intertiajs/inertia-svelte all deal with the svelte integration, and @intertiajs/inertia @intertiajs/progress are for our inertia integration and a progress bar so if things take a bit longer than expected to be returned from the server the user will know it is loading.
 
-Next, grab your application.js, and change it to
+Next, grab your app/frontend/entrypoints/application.js, and change it to
 ```
 import axios from 'axios'
 
