@@ -13,8 +13,7 @@ We need to have the --database=postgresql flag as a postgres database is what is
 
 From here, as per Stefan, add intertia_rails and vite_rails with
 ```
-bundle add inertia_rails
-bundle add vite_rails
+bundle add 'inertia_rails' 'vite_rails'
 ```
 and run the vite installer:
 ```
