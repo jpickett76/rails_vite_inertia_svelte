@@ -49,7 +49,7 @@ createInertiaApp({
 })
 ```
 
-which sets up all of the above (i.e. CSRF tokens, progress bar, vite/svelte configuration). Continuing on from Stefan's example, open up vite.config.ts and change it to
+which sets up all of the above (i.e. CSRF tokens, progress bar, vite/svelte configuration). Continuing on from Stefan's example, open up /vite.config.ts and change it to
 
 ```
 import { defineConfig } from 'vite'
