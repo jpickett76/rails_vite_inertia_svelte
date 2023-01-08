@@ -6,10 +6,10 @@ I will be using the same example as Stefan, and will be using a docker-compose.y
 
 ## Getting Started
 What I have installed on my machine is the following, You may have different versions, and that may be ok.:
-Ruby 3.1.2  -- Inslled using rbenv -- https://github.com/rbenv/rbenv
-Rails 7.0.4  
-Node 19.3.0  -- https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
-Docker Desktop 4.15.0  -- https://www.docker.com/products/docker-desktop
+*Ruby 3.1.2  -- Inslled using rbenv -- https://github.com/rbenv/rbenv
+*Rails 7.0.4  
+*Node 19.3.0  -- https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+*Docker Desktop 4.15.0  -- https://www.docker.com/products/docker-desktop
 
 ## Creating the Rails App
 ```
@@ -35,7 +35,7 @@ Axios is used by Intertia under the hood, and we need to make sure we avoid gett
 
 Next, grab the application.js in the newly crateed frontend folder and change it to:
 full **your-app-name/app/frontend/entrypoints/application.js**
-```
+'
 import axios from 'axios'
 
 import { createInertiaApp } from '@inertiajs/inertia-svelte'
@@ -54,7 +54,7 @@ createInertiaApp({
     new App({ target: el, props })
   },
 })
-```
+'
 
 which sets up all of the above (i.e. CSRF tokens, progress bar, vite/svelte configuration). Continuing on from Stefan's example, open up vite.config.ts and change it to
 
