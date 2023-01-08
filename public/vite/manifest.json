@@ -1,0 +1,25 @@
+{
+  "pages/HomePage.css": {
+    "file": "assets/HomePage.d45a6f6c.css",
+    "src": "pages/HomePage.css"
+  },
+  "pages/HomePage.svelte": {
+    "file": "assets/HomePage.80595d40.js",
+    "src": "pages/HomePage.svelte",
+    "isDynamicEntry": true,
+    "imports": [
+      "entrypoints/application.js"
+    ],
+    "css": [
+      "assets/HomePage.d45a6f6c.css"
+    ]
+  },
+  "entrypoints/application.js": {
+    "file": "assets/application.47fc4925.js",
+    "src": "entrypoints/application.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "pages/HomePage.svelte"
+    ]
+  }
+}
