@@ -3,6 +3,9 @@ This post was inspired, and partially copied from Andrew's post on his blog, whi
 # Rails 7 + Svelte + Intertia + Heroku
 I will be using the same example as Stefan, and will be using a docker-compose.yml to get my postgres instance running locally, as well as using the same example as Andrew, and will be deploying to Heroku. 
 
+### Demo
+You can find the demo here: https://svelte-intertia-rails.herokuapp.com/
+
 
 ## Getting Started
 What I have installed on my machine is the following, You may have different versions, and that may be ok.:
@@ -271,14 +274,17 @@ Now we need to add heroku's platform to our gemfile.lock. In your terminal run:
 bundle lock --add-platform x86_64-linux
 ```
 
-Make sure yoyu commit 
+Make sure you commit 
 Head to your heroku account, and find your newly created app. Then go to settings, and add a ruby buildpack to the app. You're almost there!
 
 Finally, after saving and committing all of this in git, you can send it on it's way with git push heroku main
 
 Once this is done pushing, run 
 ```
-heroku run rails db:migrate 
+heroku run rake db:migrate 
+heroku run rails c
+User.create(name: "Darth Vader", email: "happyvader@fluffybunnyhugs.com")
+exit
 ```
 to get the migrated database values up and going, and as the last thing, run heroku open to open your app!
 
