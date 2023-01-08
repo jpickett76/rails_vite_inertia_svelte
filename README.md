@@ -34,8 +34,10 @@ npm i -D vite-plugin-full-reload
 Axios is used by Intertia under the hood, and we need to make sure we avoid getting caught without CSRF tokens in our requests, svelte @sveltejs/vite-plugin-svelte @intertiajs/inertia-svelte all deal with the svelte integration, and @intertiajs/inertia @intertiajs/progress are for our inertia integration and a progress bar so if things take a bit longer than expected to be returned from the server the user will know it is loading.
 
 Next, grab the application.js in the newly crateed frontend folder and change it to:
-full **your-app-name/app/frontend/entrypoints/application.js**
-```('javascript')
+
+Full **your-app-name/app/frontend/entrypoints/application.js**
+
+```javascript
 import axios from 'axios'
 
 import { createInertiaApp } from '@inertiajs/inertia-svelte'
@@ -54,12 +56,11 @@ createInertiaApp({
     new App({ target: el, props })
   },
 })
-'
-)
+```
 which sets up all of the above (i.e. CSRF tokens, progress bar, vite/svelte configuration). Continuing on from Stefan's example, open up vite.config.ts and change it to
 
 Full **your-app-name/vite.config.ts**
-```
+```ts
 import { defineConfig } from 'vite'
 import RubyPlugin from 'vite-plugin-ruby'
 import { svelte } from '@sveltejs/vite-plugin-svelte';
@@ -82,7 +83,7 @@ export default defineConfig({
 After all this, you may need to make sure the package.json has the following in the scripts section:
 
 Full **your-app-name/package.json**
-```
+```json
 {
   "type": "module",
   "devDependencies": {
@@ -110,7 +111,7 @@ Full **your-app-name/package.json**
 The next thing you'll want to do is: in the root of your project create a docker-compose.yml file and fill it with the following. This will make your postgres instance available at your localhost on port 5334, and connect to the postgres container on port 5432, the default listening port for postgres. 
 
 FULL **your-app-name/docker-compose.yml**
-```
+```yml
 version: "3.9"
 services:
   db:
@@ -128,7 +129,7 @@ volumes:
 ```
 
 In your terminal run:
-```
+```cmd 
 docker-compose up -d
 ```
 This creates your docker container and runs it in the background. I like to leave off the -d so I can see the logs, but that's up to you.
@@ -136,7 +137,7 @@ This creates your docker container and runs it in the background. I like to leav
 From here, open up your database.yml and change the default portion to the following
 
 Defalut Portion ONLY is  below **config/databasse.yml**
-```
+```yml 
 default: &default
   adapter: postgresql
   encoding: unicode
@@ -173,8 +174,9 @@ User.create(name: "Darth Vader", email: "happyvader@fluffybunny.com")
 
 ## Setting up the Frontend
 Update your routes file and add a route for a root path that will point at our home controller
+
 FULL **your-app-name/config/routes.rb**
-```
+```rb
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
@@ -183,8 +185,9 @@ end
 ```
 
 Run ```rails g controller home``` to generate your controller to handle the views. Change the controller to look like the following:
+
 FULL **your-app-name/app/controllers/home_controller.rb**
-```
+```rb
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
@@ -207,7 +210,7 @@ Create a HomePage.svelte file in the pages directory. This is where we will be r
 touch app/frontend/pages/HomePage.svelte
 ```
 ***your-app-name/app/frontend/pages/HomePage.svelete
-```
+```svelte
 <script>
   export let user
 </script>
