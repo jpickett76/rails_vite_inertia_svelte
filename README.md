@@ -253,6 +253,11 @@ Then once you have done that, in your terminal you'll want to create your app an
 ```
 heroku create your_app_name
 heroku buildpacks:add heroku/nodejs
+heroku buildpacks:add heroku/ruby
+```
+Then you'll want to add the postgres addon to your heroku app:
+```
+heroku addons:create heroku-postgresql:hobby-dev
 ```
 Check that it set the heroku remote correctly with 
 ```
