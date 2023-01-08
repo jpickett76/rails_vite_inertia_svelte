@@ -4,7 +4,7 @@ This post was inspired, and partially copied from Andrew's post on his blog, whi
 I will be using the same example as Stefan, and will be using a docker-compose.yml to get my postgres instance running locally, as well as using the same example as Andrew, and will be deploying to Heroku. 
 
 ### Demo
-You can find the demo here: https://svelte-intertia-rails.herokuapp.com/
+You can find the demo here: https://rails-vite-inertia-svelte.herokuapp.com/
 
 
 ## Getting Started
