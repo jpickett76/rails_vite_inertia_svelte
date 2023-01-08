@@ -6,8 +6,9 @@ services:
     environment:
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_USER: "postgres"
+
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - rails_vite_inertia_svelte:/var/lib/postgresql/data
 volumes:

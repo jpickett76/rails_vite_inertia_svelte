@@ -1,17 +1,17 @@
 import { defineConfig } from 'vite'
 import RubyPlugin from 'vite-plugin-ruby'
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+import FullReload from 'vite-plugin-full-reload'
+
 
 export default defineConfig({
-  resolve: {
-    dedupe: ['axios']
-  },
   plugins: [
     RubyPlugin(),
-    svelte({
-      experimental: {
-        prebundleSvelteLibraries: true
-      }
-    })
-  ]
+    FullReload(["config/routes.rb", "app/views/**/*"]),
+    svelte(),
+  ],
+  optimizeDeps: {
+    exclude: ['another-svelte-router']
+  }
+
 })

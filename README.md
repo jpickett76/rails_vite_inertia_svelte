@@ -1,33 +1,40 @@
-NB: This post takes heavy inspiration from Stefan Buhrmester's article, with the addition of deployment to Heroku and a few extra little tidbits.
+This post was inspired, and partially copied from Andrew's post on his blog, which you can find here: https://hashnode.com/post/deploy-a-svelteinertiarails-app-to-heroku-ckz6daabm0sqtghs1808cewbz, and Stefan's post on his blog, which you can find here: https://stefanwienert.net/deploying-a-rails-7-app-to-heroku-with-vite-and-svelte/
 
-For this you will also need to download Docker Desktop, as I will be using a simple docker-compose.yml to get my postgres instance running.
+# Rails 7 + Svelte + Intertia + Heroku
+I will be using the same example as Stefan, and will be using a docker-compose.yml to get my postgres instance running locally, as well as using the same example as Andrew, and will be deploying to Heroku. 
 
-To start of with a new rails 7 app, make sure you have the latest rails version (7.0.1 for me currently) and then run
 
+## Getting Started
+What I have installed on my machine is the following, You may have different versions, and that may be ok.:
+Ruby 3.1.2  -- Inslled using rbenv -- https://github.com/rbenv/rbenv
+Rails 7.0.4  
+Node 19.3.0  -- https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+Docker Desktop 4.15.0  -- https://www.docker.com/products/docker-desktop
+
+## Creating the Rails App
 ```
 rails new your-app-name --skip-javascript --skip-asset-pipeline --database=postgresql
 ```
-
-
 We need to have the --database=postgresql flag as a postgres database is what is required to deploy to heroku.
 
-From here, as per Stefan, add intertia_rails and vite_rails with
+### Adding Svelte and Intertia
 ```
 bundle add 'inertia_rails' 'vite_rails'
 ```
-and run the vite installer:
-```
-bundle exec vite install
-```
-which will create a folder for your frontend, a default vite.config.ts, and update your application.html.erb, as well as setting up our initial package.json. From here, we still need to add some more packages:
+This will create a folder for your frontend, a default vite.config.ts, and update your application.html.erb, as well as setting up our initial package.json. From here, we still need to add some more packages:
+
 
 ```
 npm install -D axios svelte @sveltejs/vite-plugin-svelte @inertiajs/inertia @inertiajs/inertia-svelte @inertiajs/progress
 ```
+```
+npm i -D vite-plugin-full-reload
+```
 
 Axios is used by Intertia under the hood, and we need to make sure we avoid getting caught without CSRF tokens in our requests, svelte @sveltejs/vite-plugin-svelte @intertiajs/inertia-svelte all deal with the svelte integration, and @intertiajs/inertia @intertiajs/progress are for our inertia integration and a progress bar so if things take a bit longer than expected to be returned from the server the user will know it is loading.
 
-Next, grab your app/frontend/entrypoints/application.js, and change it to
+Next, grab the application.js in the newly crateed frontend folder and change it to:
+full **your-app-name/app/frontend/entrypoints/application.js**
 ```
 import axios from 'axios'
 
@@ -49,8 +56,9 @@ createInertiaApp({
 })
 ```
 
-which sets up all of the above (i.e. CSRF tokens, progress bar, vite/svelte configuration). Continuing on from Stefan's example, open up /vite.config.ts and change it to
+which sets up all of the above (i.e. CSRF tokens, progress bar, vite/svelte configuration). Continuing on from Stefan's example, open up vite.config.ts and change it to
 
+Full **your-app-name/vite.config.ts**
 ```
 import { defineConfig } from 'vite'
 import RubyPlugin from 'vite-plugin-ruby'
@@ -70,10 +78,38 @@ export default defineConfig({
   ]
 })
 ```
-Now we can move on to the next piece of this puzzle, and deviate from the other article (other than the first command where we installed rails with --database=postgresql as well).
 
-The next thing you'll want to do is: in the root of your project create a docker-compose.yml file and fill it with
+After all this, you may need to make sure the package.json has the following in the scripts section:
 
+Full **your-app-name/package.json**
+```
+{
+  "type": "module",
+  "devDependencies": {
+    "@inertiajs/inertia": "^0.11.1",
+    "@inertiajs/inertia-svelte": "^0.8.0",
+    "@inertiajs/progress": "^0.2.7",
+    "@sveltejs/vite-plugin-svelte": "^2.0.2",
+    "axios": "^1.2.2",
+    "svelte": "^3.55.0",
+    "vite": "^4.0.4",
+    "vite-plugin-full-reload": "^1.0.5",
+    "vite-plugin-ruby": "^3.1.3"
+  },
+  "dependencies": {
+    "@inertiajs/inertia": "^0.11.1",
+    "@inertiajs/inertia-svelte": "^0.8.0",
+    "@inertiajs/progress": "^0.2.7",
+    "svelte": "^3.46.6",
+    "svelte-loader": "^3.1.2"
+  }
+}
+```
+
+## Setting up the Database With Docker
+The next thing you'll want to do is: in the root of your project create a docker-compose.yml file and fill it with the following. This will make your postgres instance available at your localhost on port 5334, and connect to the postgres container on port 5432, the default listening port for postgres. 
+
+FULL **your-app-name/docker-compose.yml**
 ```
 version: "3.9"
 services:
@@ -82,100 +118,62 @@ services:
     container_name: "your-app-name"
     environment:
       POSTGRES_PASSWORD: "postgres"
+      POSTGRES_USER: "postgres"
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - your-app-name:/var/lib/postgresql/data
 volumes:
   your-app-name:
 ```
 
-and then run
+In your terminal run:
 ```
 docker-compose up -d
 ```
+This creates your docker container and runs it in the background. I like to leave off the -d so I can see the logs, but that's up to you.
 
-to create your docker container and run it in the background.
+From here, open up your database.yml and change the default portion to the following
 
-From here, open up your database.yml and change the values in the development: section to be
-
+Defalut Portion ONLY is  below **config/databasse.yml**
 ```
-host: localhost
-database: your-app-name-development
-username: postgres
-password: postgres
-port: 5432
-```
-
-and then open the container with your cli (I typically just go to docker-desktop and open it from the container itself:
-
-
-Once in there, run
-```
-psql -U postgres
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # https://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres
+  password: postgres
+  host: localhost
+  port: 5434
 ```
 
-and then once in the shell, run
-
-'''
-create database your-test-app_development;
-create database your-test-app_test;
-exit;
-'''
-
-Congrats! You have a db set up. Now you're back in mostly familiar rails territory. To verify this is working, in your terminal run
-
+Now in the termial, from the root directory of your appliation run the following:
 ```
-rails g migration create_users
+rake db:create
 ```
 
-to create a users table, and create a User model in models/user.rb and 
-fill it with
+## Setting up a Model
 
 ```
-# frozen_string_literal: true
-
-class User < ApplicationRecord
-end
+rails g model user email:string name:string
 ```
-
-In the migration you created, fill it with
-
-```
-# frozen_string_literal: true
-
-class CreateUsers < ActiveRecord::Migration[7.0]
-  def change
-    create_table :users do |t|
-      t.string :name
-
-      t.timestamps
-    end
-  end
-end
-
-```
-to give your user a name you can call them by.
-
-Head back to your terminal and run
+This will create a user model and migration to match. Now you can run 
 
 ```
 rails db:migrate
 ```
-
-wait for the migration, and run
+Creates the users table. Once that is done we can run the console and create a user
 
 ```
 rails c
+User.create(name: "Darth Vader", email: "happyvader@fluffybunny.com")
 ```
 
-to get the rails console, then create a user with
-
-```
-User.create(name: "Darth Vader")
-```
-In your config/routes.rb, fill it with
-
+## Setting up the Frontend
+Update your routes file and add a route for a root path that will point at our home controller
+FULL **your-app-name/config/routes.rb**
 ```
 # frozen_string_literal: true
 
@@ -183,7 +181,9 @@ Rails.application.routes.draw do
   root "home#index"
 end
 ```
-to create an initial home page for the rails app. From here, create an app/controllers/home_controller.rb, and fill it with
+
+Run ```rails g controller home``` to generate your controller to handle the views. Change the controller to look like the following:
+FULL **your-app-name/app/controllers/home_controller.rb**
 ```
 # frozen_string_literal: true
 
@@ -196,8 +196,17 @@ class HomeController < ApplicationController
 end
 ```
 
-The render inertia is where all of that sweet sweet inertia goodness comes into play. Those props will be handed into your svelte component as you would expect them to in any other svelte(kit) application! Now in your frontend directory, create a pages directory, and put a HomePage.svelte component in there, filling that with something simple and hideous (or beautiful):
+The render inertia is where all of that sweet sweet inertia goodness comes into play. Those props will be handed into your svelte component as you would expect them to in any other svelte(kit) application! Now in your frontend directory, create a pages directory. From your terminal you can run:
 
+```
+mkdir mkdir app/frontend/pages
+```
+
+Create a HomePage.svelte file in the pages directory. This is where we will be rendering our user data.
+```
+touch app/frontend/pages/HomePage.svelte
+```
+***your-app-name/app/frontend/pages/HomePage.svelete
 ```
 <script>
   export let user
@@ -220,6 +229,16 @@ The render inertia is where all of that sweet sweet inertia goodness comes into 
  }
 </style>
 ```
+
+
+## Testing Locally
+Make sure docker is still running, and then in your terminal, from the root of your application run:
+```
+rails s
+```
+Then you can navigate to http://localhost:3000 and see your user data rendered in the browser. Make sure you have your docker container running as well, or you won't be able to connect to the database. 
+
+## Deploying to Heroku
 
 Make sure whatever you type into the input is updating the value for Mister Skywalker (at least on the front end)!
 
