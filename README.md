@@ -254,6 +254,7 @@ Then once you have done that, in your terminal you'll want to create your app an
 heroku create your_app_name
 heroku buildpacks:add heroku/nodejs
 heroku buildpacks:add heroku/ruby
+heroku config:set NPM_CONFIG_INCLUDE='dev' YARN_PRODUCTION=false
 ```
 Then you'll want to add the postgres addon to your heroku app:
 ```
@@ -263,6 +264,13 @@ Check that it set the heroku remote correctly with
 ```
 git remote -v
 ```
+
+Now we need to add heroku's platform to our gemfile.lock. In your terminal run:
+```
+bundle lock --add-platform x86_64-linux
+```
+
+Make sure yoyu commit 
 Head to your heroku account, and find your newly created app. Then go to settings, and add a ruby buildpack to the app. You're almost there!
 
 Finally, after saving and committing all of this in git, you can send it on it's way with git push heroku main
