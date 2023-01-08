@@ -255,6 +255,7 @@ heroku create your_app_name
 heroku buildpacks:add heroku/nodejs
 heroku buildpacks:add heroku/ruby
 heroku config:set NPM_CONFIG_INCLUDE='dev' YARN_PRODUCTION=false
+heroku config:set NPM_CONFIG_PRODUCTION=false YARN_PRODUCTION=false
 ```
 Then you'll want to add the postgres addon to your heroku app:
 ```
