@@ -35,8 +35,7 @@ Axios is used by Intertia under the hood, and we need to make sure we avoid gett
 
 Next, grab the application.js in the newly crateed frontend folder and change it to:
 full **your-app-name/app/frontend/entrypoints/application.js**
-code('javascript')
-'
+```('javascript')
 import axios from 'axios'
 
 import { createInertiaApp } from '@inertiajs/inertia-svelte'
