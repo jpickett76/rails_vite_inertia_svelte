@@ -249,7 +249,7 @@ From here we get into the actual deploy to heroku:
 
 I'm assuming you already have a heroku account, but if not you should probably sign up now, and download their cli.
 
-Then once you have done that, in your terminal you'll want to create your app and give it a name that actually makes sense, and add the nodejs buildpack:
+Then once you have done that, in your terminal you'll want to create your app and give it a name that actually makes sense, and add the nodejs buildpack and the ruby buildpack. Make sure nodejs is first, otherwise you will end up with a build error.
 ```
 heroku create your_app_name
 heroku buildpacks:add heroku/nodejs
